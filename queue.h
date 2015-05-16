@@ -21,11 +21,14 @@ typedef enum{
 } bool;
 
 
-typedef unsigned char info;
-
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#ifdef QUEUE_TYPE
+	typedef QUEUE_TYPE info;
+#else
+	typedef unsigned char info;
+#endif /*QUEUE_TYPE*/
 
 #if !(defined LL_QUEUE) && !(defined ARY_QUEUE)
     #define WARN_MSG 
@@ -64,6 +67,8 @@ bool empty(queue);
 
 /*Retorna true se houver ocorrido um overflow; false caso contrário*/
 bool overflow(queue);
+
+bool underflow(queue);
 
 /*Checa se há espaço na fila e, caso haja, enfileira o elemento passado*/
 void push(queue, info);

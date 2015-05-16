@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*Biblioteca de fila (FIFO) circular (sem estouro) com controle de overflow   */
+/*Biblioteca de fila (FIFO) circular com controle de overflow                 */
 /*e implementação dupla em lista ligada e vetor.                              */
 /*                                                                            */
 /*Copyright (C) 2012 André Santos de Medeiros (andsmedeiros@gmail.com)        */
@@ -7,7 +7,7 @@
 /*(http://www.gnu.org/licenses/gpl-2.0.html)                                  */
 /******************************************************************************/
 /******************************************************************************/
-/*Circular queue (FIFO) library with overflow control (no overflow) and double*/
+/*Circular queue (FIFO) library with overflow control and double              */
 /*implementation: linked list and array.                                      */
 /*                                                                            */
 /*Copyright (C) 2012 André Santos de Medeiros (andsmedeiros@gmail.com)        */
@@ -17,7 +17,6 @@
 
 #include "queue.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 #ifndef QUEUE_H
 #error "Queue header not included! Do NOT include this file! Aborting!"
@@ -29,7 +28,7 @@
 struct _queue{
     info * ary;
     node first, last;
-    bool overflow;
+    bool overflow, underflow;
     int size, count;
 };
 
@@ -45,7 +44,7 @@ queue newQueue(int size){
     int i;
     new_queue = malloc(queue_size);
     new_queue->first = new_queue->last = malloc(node_size);
-    new_queue->overflow = FALSE;
+    new_queue->overflow = false;
     new_queue->size = size;
     new_queue->count = 0;
     last = new_queue->last;
@@ -70,20 +69,24 @@ void freeQueue(queue current){
 }
 
 bool full(queue current){
-    return((current->count)>=(current->size) ? TRUE : FALSE);
+    return((current->count)>=(current->size) ? true : false);
 }
 
 bool empty(queue current){
-    return((current->count)<=0 ? TRUE : FALSE);
+    return((current->count)<=0 ? true : false);
 }
 
 bool overflow(queue current){
     return current->overflow;
 }
 
+bool underflow(queue current){
+    return current->underflow;
+}
+
 void push(queue current, info information){
     if(full(current)){
-        current->overflow = TRUE;
+        current->overflow = true;
         return;
     }
     current->last->next->information = information;
@@ -92,6 +95,11 @@ void push(queue current, info information){
 }
 
 info pop(queue current){
+    if(current->count == 0){
+        current->underflow = true;
+        return NULL;
+    }
+
     info information = current->first->information;
     current->first = current->first->next;
     (current->count)--;
@@ -99,7 +107,7 @@ info pop(queue current){
 }
 
 void clearOverflow(queue current){
-    current->overflow = FALSE;
+    current->overflow = false;
 }
 
 int queueSize(queue current){
@@ -116,7 +124,7 @@ queue newQueue(int size){
     queue new_queue = malloc(queue_size);
     new_queue->ary = malloc(size * sizeof(info));
     new_queue->first = new_queue->last = 0;
-    new_queue->overflow = FALSE;
+    new_queue->overflow = false;
     new_queue->count = 0;
     new_queue->size = size;
     return new_queue;
@@ -128,11 +136,11 @@ void freeQueue(queue current){
 }
 
 bool full(queue current){
-    return((current->count)>=(current->size) ? TRUE : FALSE);
+    return((current->count)>=(current->size) ? true : false);
 }
 
 bool empty(queue current){
-    return(current->count<=0 ? TRUE : FALSE);
+    return(current->count<=0 ? true : false);
 }
 
 bool overflow(queue current){
@@ -141,7 +149,7 @@ bool overflow(queue current){
 
 void push(queue current, info information){
     if(full(current)){
-        current->overflow = TRUE;
+        current->overflow = true;
         return;
     }
     current->last = inc(current->last);
@@ -157,7 +165,7 @@ info pop(queue current){
 }
 
 void clearOverflow(queue current){
-    current->overflow = FALSE;
+    current->overflow = false;
 }
 
 int queueSize(queue current){
